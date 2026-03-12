@@ -76,24 +76,3 @@ add_filter('wp_is_application_passwords_available', function ($available) {
     }
     return $available;
 });
-
-
-// Fix type mismatch between acf blocks and standard by trying to intercept before WPGraphQL processes the block type
-add_filter('register_block_type_args', function($args, $name) {
-    if (isset($args['attributes']['align'])) {
-        $args['attributes']['align'] = [
-            'type' => 'string',
-            'default' => null,
-            '__experimentalRole' => 'content',
-            'source' => 'attribute',
-            'selector' => '[class*="align"]',
-            'extractValue' => function($value) {
-                if (preg_match('/align(full|wide|left|right|center)/', $value, $matches)) {
-                    return $matches[1];
-                }
-                return null;
-            }
-        ];
-    }
-    return $args;
-}, 20, 2);
