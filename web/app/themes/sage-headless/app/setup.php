@@ -114,6 +114,13 @@ add_action('after_setup_theme', function () {
 
 
 /**
+ * Remove the Comments menu item from the admin.
+ */
+add_action('admin_menu', function () {
+    remove_menu_page('edit-comments.php');
+});
+
+/**
  * Register the theme sidebars.
  *
  * @return void

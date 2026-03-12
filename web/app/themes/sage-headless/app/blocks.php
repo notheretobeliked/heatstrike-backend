@@ -54,9 +54,21 @@ function unwrap_nonnull_fields(array $fields, array $nullable_fields): array
     return $fields;
 }
 
+// Nullable attribute names shared across block nullability filters
+$nullable_attrs = ['backgroundColor', 'textColor', 'align', 'style', 'className'];
+
 // Fix core/spacer height nullability (String! conflicts with CoreImage height which is String)
 add_filter('graphql_coreSpacerAttributes_fields', function ($fields) {
     return unwrap_nonnull_fields($fields, ['height']);
+});
+
+// Fix core/columns and core/column attribute nullability
+add_filter('graphql_coreColumnsAttributes_fields', function ($fields) use ($nullable_attrs) {
+    return unwrap_nonnull_fields($fields, $nullable_attrs);
+});
+
+add_filter('graphql_coreColumnAttributes_fields', function ($fields) use ($nullable_attrs) {
+    return unwrap_nonnull_fields($fields, $nullable_attrs);
 });
 
 /**
@@ -202,6 +214,36 @@ add_action('graphql_register_types', function () {
             $attrs = $block['attrs'] ?? [];
             $query = $attrs['query'] ?? [];
             return $resolve_posts($query);
+        },
+    ]);
+
+    // Top-level query for paginated posts (used by frontend pagination)
+    register_graphql_field('RootQuery', 'queryPosts', [
+        'type'        => ['list_of' => 'ResolvedPost'],
+        'description' => 'Fetch posts with pagination for any post type.',
+        'args'        => [
+            'postType' => ['type' => 'String'],
+            'perPage'  => ['type' => 'Int'],
+            'offset'   => ['type' => 'Int'],
+            'order'    => ['type' => 'String'],
+            'orderBy'  => ['type' => 'String'],
+        ],
+        'resolve'     => function ($root, $args) use ($resolve_posts) {
+            return $resolve_posts($args);
+        },
+    ]);
+
+    // Total post count for pagination
+    register_graphql_field('RootQuery', 'queryPostsCount', [
+        'type'        => 'Int',
+        'description' => 'Get total post count for pagination.',
+        'args'        => [
+            'postType' => ['type' => 'String'],
+        ],
+        'resolve'     => function ($root, $args) {
+            $post_type = $args['postType'] ?? 'post';
+            $counts = wp_count_posts($post_type);
+            return (int) ($counts->publish ?? 0);
         },
     ]);
 });
