@@ -31,8 +31,6 @@ require $composer;
 
 use Roots\Acorn\Application;
 
-use Roots\Acorn\Application;
-
 add_action('after_setup_theme', function () {
     Application::configure()
         ->withProviders([
