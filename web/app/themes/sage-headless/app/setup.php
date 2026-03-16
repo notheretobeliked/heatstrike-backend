@@ -471,3 +471,10 @@ add_action('graphql_register_types', function () {
         }
     ]);
 });
+
+/**
+ * Fix FaustWP media redirect issue.
+ * Disable media URL redirects so images serve from backend.
+ */
+add_filter('faustwp_rewrite_image_url', '__return_false');
+add_filter('faustwp_rewrite_media_url', '__return_false');

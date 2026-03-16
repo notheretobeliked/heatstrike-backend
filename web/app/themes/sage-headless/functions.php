@@ -101,7 +101,7 @@ add_action('graphql_register_types', function () {
 |
 */
 
-collect(['preview-integration', 'setup', 'filters'])
+collect(['preview-integration', 'setup', 'filters', 'blocks'])
     ->each(function ($file) {
         if (! locate_template($file = "app/{$file}.php", true, true)) {
             wp_die(
