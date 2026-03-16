@@ -6,6 +6,7 @@
 
 namespace App;
 
+use function Roots\asset;
 use function Roots\bundle;
 
 /**
@@ -23,7 +24,7 @@ add_action('wp_enqueue_scripts', function () {
  * @return void
  */
 add_action('enqueue_block_editor_assets', function () {
-    bundle('editor')->enqueue();
+    bundle('editor')->enqueueJs();
 }, 100);
 
 /**
@@ -32,6 +33,16 @@ add_action('enqueue_block_editor_assets', function () {
  * @return void
  */
 add_action('after_setup_theme', function () {
+    /**
+     * Enable editor styles.
+     * Loads frontend CSS into the editor via add_editor_style()
+     * so WordPress auto-scopes selectors under .editor-styles-wrapper.
+     *
+     * @link https://discourse.roots.io/t/sage-and-editor-styles/24371
+     */
+    add_theme_support('editor-styles');
+    add_editor_style(asset('app.css')->relativePath(get_theme_file_path()));
+
     /**
      * Disable full-site editing support.
      *
@@ -100,6 +111,7 @@ add_action('after_setup_theme', function () {
      */
     add_theme_support('customize-selective-refresh-widgets');
 }, 20);
+
 
 /**
  * 
