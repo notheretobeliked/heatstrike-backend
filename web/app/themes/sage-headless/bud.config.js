@@ -34,7 +34,7 @@ export default async (app) => {
    */
   app
     .setUrl('http://localhost:3000')
-    .setProxyUrl('http://headless.test')
+    .setProxyUrl('http://example.test')
     .watch(['resources/views', 'app']);
 
   /**
@@ -65,6 +65,10 @@ export default async (app) => {
           'font-size': {},
           'line-height': {},
         },
+      },
+      layout: {
+        contentSize: '768px',
+        wideSize: '1100px',
       },
       spacing: {
         padding: true,

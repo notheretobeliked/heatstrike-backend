@@ -29,17 +29,6 @@ require $composer;
 |
 */
 
-if (! function_exists('\Roots\bootloader')) {
-    wp_die(
-        __('You need to install Acorn to use this theme.', 'sage'),
-        '',
-        [
-            'link_url' => 'https://roots.io/acorn/docs/installation/',
-            'link_text' => __('Acorn Docs: Installation', 'sage'),
-        ]
-    );
-}
-
 use Roots\Acorn\Application;
 
 add_action('after_setup_theme', function () {
@@ -101,7 +90,7 @@ add_action('graphql_register_types', function () {
 |
 */
 
-collect(['preview-integration', 'setup', 'filters'])
+collect(['preview-integration', 'setup', 'filters', 'blocks'])
     ->each(function ($file) {
         if (! locate_template($file = "app/{$file}.php", true, true)) {
             wp_die(
